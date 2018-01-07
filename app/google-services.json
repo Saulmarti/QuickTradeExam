@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "294921147196-7msmrvea6le28j23ggkpt0315a107tt4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.a2dam.quicktrade",
+            "certificate_hash": "52223bbf1d4d07d403f742300046508e1a7ee93a"
+          }
+        },
+        {
           "client_id": "294921147196-i0cdphrns4s5von7p6nbms7tin3pefau.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

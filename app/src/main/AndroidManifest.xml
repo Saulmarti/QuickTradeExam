@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Registrar" />
+        <activity android:name=".Modificar" />
+        <activity android:name=".Mostrar" />
+        <activity android:name=".RegProductos" />
+        <activity android:name=".modProducto" />
+        <activity android:name=".mosProducto"></activity>
     </application>
 
 </manifest>

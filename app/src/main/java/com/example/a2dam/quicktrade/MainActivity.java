@@ -1,66 +1,122 @@
 package com.example.a2dam.quicktrade;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.a2dam.quicktrade.Model.Usuario;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-public class MainActivity extends AppCompatActivity {
 
-    EditText nusuario,nom,ape,co,dir;
-    Button btnguarda;
-    DatabaseReference bd;
+    Button btnreg,btnmod,btnmos;
+    int Request_ValueProd=0, Request_ValueUsu=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nusuario = (EditText) findViewById(R.id.nombreusuariotxt);
-        nom = (EditText) findViewById(R.id.nombretxt);
-        ape = (EditText) findViewById(R.id.apellidostxt);
-        co = (EditText) findViewById(R.id.correotxt);
-        dir =(EditText) findViewById(R.id.direcciontxt);
-        btnguarda = (Button) findViewById(R.id.botonregistrar);
+        btnmod = (Button) findViewById(R.id.btnMod);
+        btnreg = (Button) findViewById(R.id.btnReg);
+        btnmos = (Button) findViewById(R.id.btnMostrar);
 
-        bd = FirebaseDatabase.getInstance().getReference("usuarios");
+        btnmos.setOnClickListener(this);
 
-        btnguarda.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnmod.setOnClickListener(this);
 
-                String usuario = nusuario.getText().toString();
-                String nombre = nom.getText().toString();
-                String apellidos = ape.getText().toString();
-                String correo = co.getText().toString();
-                String direccion = dir.getText().toString();
+        btnreg.setOnClickListener(this);
 
-
-                if(!TextUtils.isEmpty(usuario) && !TextUtils.isEmpty(nombre) && !TextUtils.isEmpty(apellidos) &&
-                        !TextUtils.isEmpty(correo) && !TextUtils.isEmpty(direccion)){
-
-                   Usuario u = new Usuario(usuario,nombre,correo,apellidos,direccion);
-                   bd.child(usuario).setValue(u);
-
-                    Toast.makeText(MainActivity.this, "Usuario registrado", Toast.LENGTH_SHORT).show();
-                    nusuario.setText("");
-                    nom.setText("");
-                    ape.setText("");
-                    co.setText("");
-                    dir.setText("");
-
-                }else{
-                    Toast.makeText(MainActivity.this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-    });
     }
-}
+
+
+    @Override
+    public void onClick(View view) {
+
+        if(view.getId()==R.id.btnMostrar){
+
+            PopupMenu popup = new PopupMenu(MainActivity.this, btnmos);
+
+            popup.getMenuInflater().inflate(R.menu.menu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch(item.getItemId())
+                    {
+                        case R.id.regprod:
+                            Intent i = new Intent(MainActivity.this, mosProducto.class);
+                            startActivityForResult(i, Request_ValueProd);
+                            break;
+                        case R.id.regusu:
+                            Intent i2 = new Intent(MainActivity.this, Mostrar.class);
+                            startActivityForResult(i2, Request_ValueUsu);
+                            break;
+                    }
+
+                    return true;
+                }
+            });
+
+            popup.show();
+        }
+
+        if(view.getId()==R.id.btnMod){
+
+            PopupMenu popup = new PopupMenu(MainActivity.this, btnmod);
+
+            popup.getMenuInflater().inflate(R.menu.menu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch(item.getItemId())
+                    {
+                        case R.id.regprod:
+                            Intent i = new Intent(MainActivity.this, modProducto.class);
+                            startActivityForResult(i, Request_ValueProd);
+                            break;
+                        case R.id.regusu:
+                            Intent i2 = new Intent(MainActivity.this, Modificar.class);
+                            startActivityForResult(i2, Request_ValueUsu);
+                            break;
+                    }
+
+                    return true;
+                }
+            });
+
+            popup.show();
+        }
+
+        if(view.getId()==R.id.btnReg){
+
+            PopupMenu popup = new PopupMenu(MainActivity.this, btnreg);
+
+            popup.getMenuInflater().inflate(R.menu.menu, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch(item.getItemId())
+                    {
+                        case R.id.regprod:
+                            Intent i = new Intent(MainActivity.this, RegProductos.class);
+                            startActivityForResult(i, Request_ValueProd);
+                            break;
+                        case R.id.regusu:
+                            Intent i2 = new Intent(MainActivity.this, Registrar.class);
+                            startActivityForResult(i2, Request_ValueUsu);
+                            break;
+                    }
+
+                    return true;
+                }
+            });
+
+            popup.show();
+        }
+    }
+
+    }
+

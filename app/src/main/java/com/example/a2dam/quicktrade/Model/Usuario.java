@@ -1,10 +1,7 @@
 package com.example.a2dam.quicktrade.Model;
 
-/**
- * Created by 2dam on 15/12/2017.
- */
-
 public class Usuario {
+
     private String usuario,nombre,correo,apellidos,direccion;
 
     public Usuario(String usuario, String nombre, String correo, String apellidos, String direccion) {
@@ -13,6 +10,9 @@ public class Usuario {
         this.correo = correo;
         this.apellidos = apellidos;
         this.direccion = direccion;
+    }
+    public Usuario(){
+
     }
 
     public String getUsuario() {
