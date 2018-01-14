@@ -16,67 +16,60 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class RegProductos extends AppCompatActivity {
 
-    Spinner spin;
-    EditText nom,desc,cat,pre;
+    Spinner cat;
+    EditText nom,desc,pre;
     Button btnreg;
     DatabaseReference bd;
+    String t = "Tecnologia";
+    String c = "Coche";
+    String h = "Hogar";
+    String nombreusuario;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_productos);
 
+        nombreusuario = getIntent().getStringExtra("usuario");
+
+
         nom = (EditText) findViewById(R.id.nombreproductotxt);
         desc = (EditText) findViewById(R.id.descripciontxt);
-        cat = (EditText) findViewById(R.id.categoriatxt);
+        cat = (Spinner) findViewById(R.id.spinnerCatr);
         pre = (EditText) findViewById(R.id.preciotxt);
-        spin = (Spinner) findViewById(R.id.spinner);
         btnreg = (Button) findViewById(R.id.botonregistrarp);
         bd = FirebaseDatabase.getInstance().getReference("usuarios");
 
-        bd.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayAdapter<String> adaptador;
-                ArrayList<String> listado = new ArrayList<String>();
+        ArrayAdapter<String> adaptador;
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(t);
+        list.add(c);
+        list.add(h);
 
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    Usuario u = datasnapshot.getValue(Usuario.class);
-                    String usu = u.getUsuario();
-                    listado.add(usu);
-                }
-
-                adaptador = new ArrayAdapter<String>(RegProductos.this,android.R.layout.simple_list_item_1,listado);
-                spin.setAdapter(adaptador);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        adaptador = new ArrayAdapter<String>(RegProductos.this,android.R.layout.simple_list_item_1,list);
+        cat.setAdapter(adaptador);
 
         btnreg.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
 
                 String nombre = nom.getText().toString();
-                String usuario = spin.getSelectedItem().toString();
                 String descripcion = desc.getText().toString();
                 String precio = pre.getText().toString();
-                String categoria = cat.getText().toString();
+                String categoria = cat.getSelectedItem().toString();
 
                 if(!TextUtils.isEmpty(nombre) && !TextUtils.isEmpty(descripcion) &&
                         !TextUtils.isEmpty(categoria) && !TextUtils.isEmpty(precio)){
 
-                    Producto p = new Producto(nombre,usuario,descripcion,precio,categoria);
+                    Producto p = new Producto(nombre,nombreusuario,descripcion,precio,categoria);
                     DatabaseReference bd2 = FirebaseDatabase.getInstance().getReference("productos");
                     bd2.child(nombre).setValue(p);
 
@@ -84,7 +77,6 @@ public class RegProductos extends AppCompatActivity {
 
                     nom.setText("");
                     desc.setText("");
-                    cat.setText("");
                     pre.setText("");
 
                 }else{

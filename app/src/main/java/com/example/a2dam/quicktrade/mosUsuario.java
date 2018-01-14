@@ -4,19 +4,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.a2dam.quicktrade.Model.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Mostrar extends AppCompatActivity {
+public class mosUsuario extends AppCompatActivity {
 
 
     DatabaseReference bd;
@@ -46,7 +44,7 @@ public class Mostrar extends AppCompatActivity {
 
                 }
 
-                adapter = new ArrayAdapter<String>(Mostrar.this,android.R.layout.simple_list_item_1,listausuarios);
+                adapter = new ArrayAdapter<String>(mosUsuario.this,android.R.layout.simple_list_item_1,listausuarios);
                 list.setAdapter(adapter);
             }
 

@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,13 +16,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
+public class modUsuario extends AppCompatActivity {
 
-public class Modificar extends AppCompatActivity {
-
-    EditText nusuario,nom,ape,co,dir;
+    EditText nom,ape,co,dir;
     Button btnguarda,btnusu;
     DatabaseReference bd;
+    String nusuario;
 
 
     @Override
@@ -31,14 +29,11 @@ public class Modificar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modifica);
 
-
-        nusuario = (EditText) findViewById(R.id.nombreusuariotxt2);
+        nusuario = getIntent().getStringExtra("usuario");
         nom = (EditText) findViewById(R.id.nombretxt2);
         ape = (EditText) findViewById(R.id.apellidostxt2);
-        co = (EditText) findViewById(R.id.correotxt2);
         dir =(EditText) findViewById(R.id.direcciontxt2);
         btnguarda = (Button) findViewById(R.id.botonregistrar2);
-        btnusu = (Button) findViewById(R.id.buscarusu);
 
         bd = FirebaseDatabase.getInstance().getReference("usuarios");
 
@@ -46,10 +41,8 @@ public class Modificar extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String usu = nusuario.getText().toString();
 
-                if(!TextUtils.isEmpty(usu)){
-                    Query q= bd.orderByChild("usuario").equalTo(usu);
+                    Query q= bd.orderByChild("usuario").equalTo(nusuario);
 
                     q.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -57,16 +50,11 @@ public class Modificar extends AppCompatActivity {
 
                             for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
                                 String clave=datasnapshot.getKey();
-                                bd.child(clave).child("usuario").setValue(nusuario.getText().toString());
+                                bd.child(clave).child("usuario").setValue(nusuario);
 
                                 String nombre = nom.getText().toString();
                                 if(!TextUtils.isEmpty(nombre)){
                                 bd.child(clave).child("nombre").setValue(nom.getText().toString());
-                                }
-
-                                String correo = co.getText().toString();
-                                if(!TextUtils.isEmpty(correo)) {
-                                    bd.child(clave).child("correo").setValue(co.getText().toString());
                                 }
 
                                 String apellidos = ape.getText().toString();
@@ -87,48 +75,11 @@ public class Modificar extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(Modificar.this, usu+" se ha modificado con éxito", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    Toast.makeText(Modificar.this, "Debes de introducir un nombre de usuario valido", Toast.LENGTH_LONG).show();
+                    Toast.makeText(modUsuario.this, nusuario+" se ha modificado con éxito", Toast.LENGTH_LONG).show();
                 }
 
-            }
-        });
-
-        btnusu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Query q=bd.orderByChild("usuario").equalTo(nusuario.getText().toString());
-
-                q.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                            Usuario usuario = datasnapshot.getValue(Usuario.class);
-
-                            String n = usuario.getNombre();
-                            nom.setText(n);
-                            String ap = usuario.getApellidos();
-                            ape.setText(ap);
-                            String c = usuario.getCorreo();
-                            co.setText(c);
-                            String d = usuario.getDireccion();
-                            dir.setText(d);
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+            });
+};}
 
 
-            }
-        });
-    }
-}
+

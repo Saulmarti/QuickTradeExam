@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a2dam.quicktrade">
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,12 +21,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Registrar" />
-        <activity android:name=".Modificar" />
-        <activity android:name=".Mostrar" />
+        <activity android:name=".RegistrarUsuario" />
+        <activity android:name=".modUsuario" />
+        <activity android:name=".mosUsuario" />
         <activity android:name=".RegProductos" />
         <activity android:name=".modProducto" />
-        <activity android:name=".mosProducto"></activity>
+        <activity android:name=".mosProducto" />
+        <activity
+            android:name=".Principal"
+            android:label="@string/title_activity_principal" />
     </application>
 
 </manifest>

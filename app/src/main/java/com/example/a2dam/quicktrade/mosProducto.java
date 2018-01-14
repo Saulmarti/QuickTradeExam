@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.a2dam.quicktrade.Model.Producto;
 import com.example.a2dam.quicktrade.Model.Usuario;
@@ -21,10 +23,12 @@ import java.util.ArrayList;
 
 public class mosProducto extends AppCompatActivity {
 
-    DatabaseReference bd;
+    DatabaseReference bd,bdu;
     ListView list;
-    Spinner spinC,spinU;
-    Button btnu,btnc;
+    Spinner spinC;
+    Button btnc;
+    String correo,nombre;
+    TextView usu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,95 +37,31 @@ public class mosProducto extends AppCompatActivity {
 
         list = (ListView) findViewById(R.id.listviewp);
         spinC = (Spinner) findViewById(R.id.spinnercat);
-        spinU = (Spinner) findViewById(R.id.spinnerusu);
-        btnu = (Button) findViewById(R.id.buttonBuscaru);
         btnc = (Button) findViewById(R.id.buttonBuscarc);
+        usu = (TextView) findViewById(R.id.txtusu);
+
+        nombre = getIntent().getStringExtra("usuario");
+        correo = getIntent().getStringExtra("email");
+
+        usu.setText(nombre);
 
         bd = FirebaseDatabase.getInstance().getReference("productos");
 
-        bd.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayAdapter<String> adaptador;
-                ArrayList<String> listado = new ArrayList<String>();
+        String t = "Tecnologia";
+        String c = "Coche";
+        String h = "Hogar";
 
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    Usuario u = datasnapshot.getValue(Usuario.class);
-                    String usu = u.getUsuario();
-                    listado.add(usu);
-                }
+        ArrayAdapter<String> adaptadorc;
+        ArrayList<String> listadoc = new ArrayList<String>();
 
-                adaptador = new ArrayAdapter<String>(mosProducto.this,android.R.layout.simple_list_item_1,listado);
-                spinU.setAdapter(adaptador);
+        listadoc.add(t);
+        listadoc.add(c);
+        listadoc.add(h);
 
-            }
+        adaptadorc = new ArrayAdapter<String>(mosProducto.this,android.R.layout.simple_list_item_1,listadoc);
+        spinC.setAdapter(adaptadorc);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        bd.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshotc) {
-
-                ArrayAdapter<String> adaptadorc;
-                ArrayList<String> listadoc = new ArrayList<String>();
-
-                for(DataSnapshot datasnapshotc: dataSnapshotc.getChildren()){
-                    Producto producto = datasnapshotc.getValue(Producto.class);
-
-                    String categoria = producto.getCategoria();
-                    listadoc.add(categoria);
-                }
-
-                adaptadorc = new ArrayAdapter<String>(mosProducto.this,android.R.layout.simple_list_item_1,listadoc);
-                spinC.setAdapter(adaptadorc);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-        btnu.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        String u = spinU.getSelectedItem().toString();
-
-        Query q= bd.orderByChild("usuario").equalTo(u);
-        q.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                ArrayAdapter<String> adapter;
-                ArrayList<String> lista = new ArrayList<String>();
-
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    Producto p = datasnapshot.getValue(Producto.class);
-
-                    String n = p.getNombre();
-                    lista.add(n);
-
-                }
-
-                adapter = new ArrayAdapter<String>(mosProducto.this,android.R.layout.simple_list_item_1,lista);
-                list.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-});
         btnc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,9 +77,12 @@ public class mosProducto extends AppCompatActivity {
 
                         for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
                             Producto p = datasnapshot.getValue(Producto.class);
+                            String us = p.getUsuario();
 
-                            String n = p.getNombre();
-                            lista.add(n);
+                            if(us.equals(nombre)) {
+                                String n = p.getNombre();
+                                lista.add(n);
+                            }
 
                         }
 
@@ -154,5 +97,8 @@ public class mosProducto extends AppCompatActivity {
                 });
             }
         });
+
+
+
     }
 }

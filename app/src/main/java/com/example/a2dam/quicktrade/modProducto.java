@@ -1,5 +1,6 @@
 package com.example.a2dam.quicktrade;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.a2dam.quicktrade.Model.Producto;
 import com.example.a2dam.quicktrade.Model.Usuario;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,30 +25,74 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class modProducto extends AppCompatActivity {
-    EditText nom,desc,cat,pre;
-    Button btnmod,btnprod;
+    EditText nom,desc,pre;
+    Button btnmod,btnprod,btnborr;
     DatabaseReference bd,bd2;
-    Spinner spin;
+    Spinner spin,cat;
     ArrayAdapter<String> adaptador;
     ArrayList<String> listado = new ArrayList<String>();
+    String t = "Tecnologia";
+    String c = "Coche";
+    String h = "Hogar";
+
+    String nombreusuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mod_producto);
 
+        nombreusuario = getIntent().getStringExtra("usuario");
 
-        nom = (EditText) findViewById(R.id.nombreproductotxt2);
         desc = (EditText) findViewById(R.id.descripciontxt2);
-        cat = (EditText) findViewById(R.id.categoriatxt2);
+        cat = (Spinner) findViewById(R.id.spinnerCatr2);
         pre = (EditText) findViewById(R.id.preciotxt2);
         btnmod = (Button) findViewById(R.id.botonregistrarp2);
         btnprod = (Button) findViewById(R.id.buscarprod);
-        spin = (Spinner) findViewById(R.id.spinner2);
+        btnborr = (Button) findViewById(R.id.buttonBorrar);
+        spin = (Spinner) findViewById(R.id.nombreproducto);
 
 
         bd = FirebaseDatabase.getInstance().getReference("productos");
         bd2 = FirebaseDatabase.getInstance().getReference("usuarios");
+
+
+        ArrayAdapter<String> adaptador2;
+        ArrayList<String> list = new ArrayList<String>();
+        list.add(t);
+        list.add(c);
+        list.add(h);
+        adaptador2 = new ArrayAdapter<String>(modProducto.this,android.R.layout.simple_list_item_1,list);
+        cat.setAdapter(adaptador2);
+
+
+
+        Query q= bd.orderByChild("usuario").equalTo(nombreusuario);
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayAdapter<String> adapter;
+                ArrayList<String> lista = new ArrayList<String>();
+
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    Producto p = datasnapshot.getValue(Producto.class);
+
+                        String n = p.getNombre();
+                        lista.add(n);
+
+
+                }
+
+                adapter = new ArrayAdapter<String>(modProducto.this,android.R.layout.simple_list_item_1,lista);
+                spin.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 
@@ -53,9 +100,8 @@ public class modProducto extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String nombre = nom.getText().toString();
+                String nombre = spin.getSelectedItem().toString();
 
-                if(!TextUtils.isEmpty(nombre)){
                     Query q= bd.orderByChild("nombre").equalTo(nombre);
 
                     q.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -64,7 +110,7 @@ public class modProducto extends AppCompatActivity {
 
                             for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
                                 String clave=datasnapshot.getKey();
-                                bd.child(clave).child("nombre").setValue(nom.getText().toString());
+                                bd.child(clave).child("nombre").setValue(spin.getSelectedItem().toString());
 
                                 String descripcion = desc.getText().toString();
                                 if(!TextUtils.isEmpty(descripcion)) {
@@ -76,13 +122,12 @@ public class modProducto extends AppCompatActivity {
                                     bd.child(clave).child("precio").setValue(pre.getText().toString());
                                 }
 
-                                String categoria = cat.getText().toString();
+                                String categoria = cat.getSelectedItem().toString();
                                 if(!TextUtils.isEmpty(categoria)) {
-                                    bd.child(clave).child("categoria").setValue(cat.getText().toString());
+                                    bd.child(clave).child("categoria").setValue(cat.getSelectedItem().toString());
                                 }
 
-
-                                    bd.child(clave).child("usuario").setValue(spin.getSelectedItem().toString());
+                                    bd.child(clave).child("usuario").setValue(nombreusuario);
 
                             }
                         }
@@ -94,7 +139,7 @@ public class modProducto extends AppCompatActivity {
                     });
 
                     Toast.makeText(modProducto.this, nombre+" se ha modificado con éxito", Toast.LENGTH_LONG).show();
-                }
+
 
             }
         });
@@ -104,7 +149,7 @@ public class modProducto extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                Query q=bd.orderByChild("nombre").equalTo(nom.getText().toString());
+                Query q=bd.orderByChild("nombre").equalTo(spin.getSelectedItem().toString());
 
                 q.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -113,40 +158,14 @@ public class modProducto extends AppCompatActivity {
 
                         for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
                             Producto producto = datasnapshot.getValue(Producto.class);
-                            String n = producto.getNombre();
-                            nom.setText(n);
                             String d = producto.getDescripcion();
                             desc.setText(d);
                             String c = producto.getCategoria();
-                            cat.setText(c);
                             String p = producto.getPrecio();
                             pre.setText(p);
-                            String nu = producto.getUsuario();
+                            String nu = producto.getNombre();
                             spin.setSelection(listado.indexOf(nu));
                         }
-                        bd2.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-
-                                    Usuario u = datasnapshot.getValue(Usuario.class);
-                                    String usu = u.getUsuario();
-                                    listado.add(usu);
-
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        adaptador = new ArrayAdapter<String>(modProducto.this,android.R.layout.simple_list_item_1,listado);
-                        spin.setAdapter(adaptador);
 
                     }
 
@@ -160,6 +179,22 @@ public class modProducto extends AppCompatActivity {
             }
         });
 
+        btnborr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatabaseReference mDatabase =FirebaseDatabase.getInstance().getReference().child("productos");
+                DatabaseReference currentUserBD = mDatabase.child(nom.getText().toString());
+                currentUserBD.removeValue();
+
+                Toast.makeText(modProducto.this, "Producto borrado", Toast.LENGTH_LONG).show();
+
+                nom.setText("");
+                desc.setText("");
+                pre.setText("");
+
+            }
+        });
 
             }
 

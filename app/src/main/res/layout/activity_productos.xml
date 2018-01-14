@@ -83,11 +83,12 @@
                 android:layout_weight="1"
                 android:text="Categoria" />
 
-            <EditText
-                android:id="@+id/categoriatxt"
+            <Spinner
+                android:id="@+id/spinnerCatr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -114,11 +115,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
         </LinearLayout>
     </LinearLayout>
 
