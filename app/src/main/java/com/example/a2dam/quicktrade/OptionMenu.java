@@ -1,10 +1,8 @@
 package com.example.a2dam.quicktrade;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 
 /**
  * Created by paco on 04/01/2018.

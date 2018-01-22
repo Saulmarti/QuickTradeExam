@@ -1,6 +1,5 @@
 package com.example.a2dam.quicktrade;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,9 +11,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.a2dam.quicktrade.Model.Producto;
-import com.example.a2dam.quicktrade.Model.Usuario;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

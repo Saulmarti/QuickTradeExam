@@ -23,7 +23,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url "https//msve.google.com"
+            url "https://maven.google.com"
         }
     }
 }

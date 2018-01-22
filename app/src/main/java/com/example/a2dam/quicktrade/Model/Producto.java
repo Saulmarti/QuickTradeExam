@@ -5,6 +5,11 @@ public class Producto {
 
     private String nombre,descripcion,usuario,precio,categoria;
 
+    public Producto(String nombre, String usuario){
+        this.nombre = nombre;
+        this.usuario = usuario;
+    }
+
     public Producto(){
 
     }
